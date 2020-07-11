@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TinyService.Cqrs\TinyService.Cqrs.csproj" />
     <ProjectReference Include="..\..\TinyService\TinyService.csproj" />
   </ItemGroup>
 
