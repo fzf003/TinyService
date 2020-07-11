@@ -10,19 +10,19 @@ using TinyService.Cqrs.Events.Dispatchers;
 
 namespace Sample_1.Actors
 {
-    public class UserActor: ProcessActor
+    public class ProductActor: ProcessActor
     {
         readonly IActorFactory actorFactory;
 
-        readonly ILogger<UserActor> logger;
+        readonly ILogger<ProductActor> logger;
 
         readonly ICommandDispatcher commandDispatcher;
 
-        public UserActor(IActorFactory actorFactory, ILoggerFactory loggerFactory, ICommandDispatcher commandDispatcher)
+        public ProductActor(IActorFactory actorFactory, ILoggerFactory loggerFactory, ICommandDispatcher commandDispatcher)
         {
             this.actorFactory = actorFactory;
 
-            this.logger = loggerFactory.CreateLogger<UserActor>();
+            this.logger = loggerFactory.CreateLogger<ProductActor>();
 
             this.commandDispatcher = commandDispatcher;
         }

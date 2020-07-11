@@ -23,14 +23,14 @@ namespace Sample_1
 
             var factory =serviceProvider.GetService<IActorFactory>();
 
-            var useractor= factory.GetActor<UserActor>("user");
+            var productactor= factory.GetActor<ProductActor>();
 
             Random random = new Random();
 
             Enumerable.Range(1, 10)
                          .Select(p =>
                          {
-                             useractor.Tell(
+                             productactor.Tell(
                                  new CreateProductCommand(
                                  name: $"笔记本-{p}",
                                  category: "3C",
@@ -46,12 +46,12 @@ namespace Sample_1
                          .ToList();
 
 
-          
-
-                useractor.Tell(new ProductActivateCommand(random.Next(1, 10), DateTime.Now));
 
 
-                Console.ReadKey();
+            productactor.Tell(new ProductActivateCommand(random.Next(1, 10), DateTime.Now));
+
+
+            Console.ReadKey();
             
             
         }
