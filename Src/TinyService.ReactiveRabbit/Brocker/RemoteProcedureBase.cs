@@ -52,8 +52,6 @@ namespace TinyService.ReactiveRabbit.Brocker
 
             if (!string.IsNullOrWhiteSpace(exchangeName))
             {
-                Channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout);
-
                 Channel.QueueBind(queue: _queueName, exchange: exchangeName, routingKey: routingKey, null);
             }
 

@@ -11,11 +11,15 @@ namespace TinyService.ReactiveRabbit.Brocker
         private readonly IModel _channel;
 
         private readonly string _topic;
-        public EndPoint(IModel channel, string topic)
+
+        readonly string _routingKey;
+
+        public EndPoint(IModel channel, string topic, string topictype = "fanout", string routingKey = "", bool durable = true)
         {
             _channel = channel;
             _topic = topic;
-            _channel.ExchangeDeclare(topic, ExchangeType.Fanout);
+            _routingKey = routingKey;
+            _channel.ExchangeDeclare(topic, topictype, durable: durable);
         }
 
         public void PushMessage(T obj)
@@ -23,8 +27,8 @@ namespace TinyService.ReactiveRabbit.Brocker
             try
             {
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
-               
-                _channel.BasicPublish(_topic, string.Empty, null, body);
+
+                _channel.BasicPublish(exchange: _topic, routingKey: _routingKey, null, body);
             }
             catch (Exception e)
             {

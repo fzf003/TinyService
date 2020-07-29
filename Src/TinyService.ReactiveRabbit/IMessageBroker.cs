@@ -6,11 +6,10 @@ namespace TinyService.ReactiveRabbit
 {
     public interface IMessageBroker
     {
-        IDisposable RegisterHandle(string exchangeName = "", string queueName = "", Func<RequestContext, Task> onMessage = null);
+        IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, Task> onMessage = null);
 
+        IEndPoint<T> GetServiceEndPoint<T>(string topicName, string topicType = "direct", string routingKey = "", bool durable = true);
 
-        IEndPoint<T> GetServicePublicEndPoint<T>(string queuename);
-
-        IObservable<T> SubscribeToTopic<T>(string topic);
+        IObservable<T> SubscribeToTopic<T>(string topic, string routingKey = "");
     }
 }

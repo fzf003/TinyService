@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-Sample_ConsulApp-1D039A57-4491-46DC-B1B8-6518F6609984</UserSecretsId>
+    <RootNamespace>Sample_ConsulApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TinyService.Discovery.Consul\TinyService.Discovery.Consul.csproj" />
+  </ItemGroup>
+</Project>

@@ -36,10 +36,10 @@ namespace Sample_2
 
             
 
-            var obserable = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(100))
+            var obserable = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(1))
                                       .Select(p => new RequestMessage(p + "--" + Guid.NewGuid().ToString("N")));
 
-            obserable.Subscribe(broker.GetServicePublicEndPoint<RequestMessage>(exchangename));
+            obserable.Subscribe(broker.GetServiceEndPoint<RequestMessage>(exchangename));
 
 
 

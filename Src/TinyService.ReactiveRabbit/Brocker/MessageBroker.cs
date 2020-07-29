@@ -25,22 +25,22 @@ namespace TinyService.ReactiveRabbit.Brocker
             _logger = loggerFactory.CreateLogger<MessageBroker>();
         }
 
-        public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", Func<RequestContext, Task> onMessage = null)
+        public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, Task> onMessage = null)
         {
-            return new RemoteSubscriptionRegistration(_channel,  queueName: queueName, exchangeName: exchangeName,  messageHandler: onMessage,loggerFactory: _loggerFactory);
+            return new RemoteSubscriptionRegistration(_channel, queueName: queueName, exchangeName: exchangeName, routingKey: routingKey, messageHandler: onMessage, loggerFactory: _loggerFactory);
         }
  
 
-        public IEndPoint<T> GetServicePublicEndPoint<T>(string topicName)
+        public IEndPoint<T> GetServiceEndPoint<T>(string topicName, string topicType = "direct", string routingKey = "", bool durable = true)
         {
-            return new EndPoint<T>(_channel, topicName);
+            return new EndPoint<T>(_channel, topicName, topictype: topicType, routingKey: routingKey, durable: durable);
         }
 
-        public IObservable<T> SubscribeToTopic<T>(string topic)
+        public IObservable<T> SubscribeToTopic<T>(string topic, string routingKey = "")
         {
-            _channel.ExchangeDeclare(topic, ExchangeType.Fanout);
+            _channel.ExchangeDeclare(topic, ExchangeType.Direct);
             var queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: queueName, exchange: topic, routingKey: string.Empty);
+            _channel.QueueBind(queue: queueName, exchange: topic, routingKey: routingKey);
 
             var consumer = new EventingBasicConsumer(_channel);
             var observable = Observable.FromEventPattern<BasicDeliverEventArgs>(

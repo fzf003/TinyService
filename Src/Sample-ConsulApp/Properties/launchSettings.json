@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "Sample_ConsulApp": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
