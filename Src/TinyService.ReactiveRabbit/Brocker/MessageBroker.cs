@@ -5,6 +5,7 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace TinyService.ReactiveRabbit.Brocker
         readonly ILoggerFactory _loggerFactory;
 
         readonly ILogger<MessageBroker> _logger;
+  
         public MessageBroker(IModel channel,ILoggerFactory loggerFactory)
         {
             _channel = channel;
@@ -25,11 +27,17 @@ namespace TinyService.ReactiveRabbit.Brocker
             _logger = loggerFactory.CreateLogger<MessageBroker>();
         }
 
-        public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, Task> onMessage = null)
+        public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, IBasicProperties, Task> onMessage = null)
         {
             return new RemoteSubscriptionRegistration(_channel, queueName: queueName, exchangeName: exchangeName, routingKey: routingKey, messageHandler: onMessage, loggerFactory: _loggerFactory);
         }
- 
+
+        public IDisposable RegisterCallResponse<TResponse>(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext,  Task<TResponse>> onMessage=null)
+        {
+            
+            return new RemoteRequestRegistration<TResponse>(_channel, queueName: queueName, exchangeName: exchangeName, routingKey: routingKey, messageHandler: onMessage, loggerFactory: _loggerFactory);
+        }
+
 
         public IEndPoint<T> GetServiceEndPoint<T>(string topicName, string topicType = "direct", string routingKey = "", bool durable = true)
         {
@@ -38,7 +46,7 @@ namespace TinyService.ReactiveRabbit.Brocker
 
         public IObservable<T> SubscribeToTopic<T>(string topic, string routingKey = "")
         {
-            _channel.ExchangeDeclare(topic, ExchangeType.Direct);
+            _channel.ExchangeDeclare(topic, ExchangeType.Direct,durable:true);
             var queueName = _channel.QueueDeclare().QueueName;
             _channel.QueueBind(queue: queueName, exchange: topic, routingKey: routingKey);
 
@@ -56,6 +64,11 @@ namespace TinyService.ReactiveRabbit.Brocker
         {
             var body = Encoding.UTF8.GetString(arg.EventArgs.Body.ToArray());
             return JsonConvert.DeserializeObject<TResult>(body);
+        }
+
+        public void Dispose()
+        {
+           
         }
     }
 }

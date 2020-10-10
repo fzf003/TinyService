@@ -1,14 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 using Sample_2.Messages;
+using Sample_2.Services;
 using System;
+using System.Net.Http;
+using System.Net;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TinyService.ReactiveRabbit;
 using TinyService.ReactiveRabbit.Brocker;
 using TinyService.ReactiveRabbit.RabbitFactory;
+using Newtonsoft.Json.Converters;
+
+using Microsoft.Extensions.Http;
 
 namespace Sample_2
 {
@@ -16,30 +23,20 @@ namespace Sample_2
     {
         static void Main(string[] args)
         {
-            const string exchangename = "PayService.RequestTopic";
-
-            const string ququename = "PayService.ResponseConsumer";
+            HttpClient httpClient = new HttpClient();
 
             IServiceProvider serviceProvider = BuildServiceCollection().BuildServiceProvider();
 
-            var broker= serviceProvider.GetService<IMessageBroker>();
+            var serviehost=serviceProvider.GetService<IServiceHost>();
 
+            serviehost.Start();
 
-            broker.RegisterHandle(exchangeName:exchangename, queueName: ququename,onMessage: context =>
-             {
-                 
-                 var request = GetJsonPayload<RequestMessage>(context.RequestMessage);
-                 Console.WriteLine(request.Payload);
-
-                 return Task.CompletedTask;
-             });
-
-            
-
-            var obserable = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(1))
+            var obserable = Observable.Timer(TimeSpan.Zero,TimeSpan.FromSeconds(3))
                                       .Select(p => new RequestMessage(p + "--" + Guid.NewGuid().ToString("N")));
 
-            obserable.Subscribe(broker.GetServiceEndPoint<RequestMessage>(exchangename));
+            obserable.Subscribe(serviehost.GetRequestEndPoint);
+
+          
 
 
 
@@ -51,7 +48,8 @@ namespace Sample_2
         {
             var services = new ServiceCollection();
             services.AddLogging(log => log.AddConsole());
-            services.AddReactiveRabbit(setting => {
+            services.AddReactiveRabbit(setting =>
+            {
                 setting.HostName = "localhost";
                 setting.Password = "fzf003";
                 setting.UserName = "fzf003";
@@ -59,13 +57,31 @@ namespace Sample_2
                 setting.VirtualHost = "fzf003";
             });
 
+            services.AddSingleton<IServiceHost, RequestProcessServiceHost>();
+                
+
             return services;
         }
 
-        private static TResult GetJsonPayload<TResult>(PayloadMessage payload)
+      
+    }
+
+    public static class ObservableExtensions
+    {
+        public static IObservable<TSource> TakeUntilInclusive<TSource>(this IObservable<TSource> source, Func<TSource, bool> predicate)
         {
-            var body = Encoding.UTF8.GetString(payload.Body.ToArray());
-            return JsonConvert.DeserializeObject<TResult>(body);
+            return Observable.Create<TSource>(
+                observer => source.Subscribe(
+                    item =>
+                    {
+                        observer.OnNext(item);
+                        if (predicate(item))
+                            observer.OnCompleted();
+                    },
+                    observer.OnError,
+                    observer.OnCompleted
+                    )
+                );
         }
     }
 }

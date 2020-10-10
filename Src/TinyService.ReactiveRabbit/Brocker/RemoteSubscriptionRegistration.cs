@@ -9,13 +9,13 @@ namespace TinyService.ReactiveRabbit.Brocker
 {
     internal class RemoteSubscriptionRegistration : RemoteProcedureBase
     {
-        private readonly Func<RequestContext, Task> _messageHandler;
+        private readonly Func<RequestContext, IBasicProperties, Task> _messageHandler;
 
         readonly ILogger<RemoteSubscriptionRegistration> _logger;
 
         readonly ILoggerFactory _loggerFactory;
 
-        public RemoteSubscriptionRegistration(IModel channel, string queueName, string exchangeName = "", string routingKey = "", bool durablequeue = true, Func<RequestContext, Task> messageHandler = null, ILoggerFactory loggerFactory=null)
+        public RemoteSubscriptionRegistration(IModel channel, string queueName, string exchangeName = "", string routingKey = "", bool durablequeue = true, Func<RequestContext, IBasicProperties, Task> messageHandler = null, ILoggerFactory loggerFactory=null)
             : base(channel, queueName, exchangeName, routingKey, durablequeue, loggerFactory: loggerFactory)
         {
             this._loggerFactory = loggerFactory;
@@ -25,9 +25,10 @@ namespace TinyService.ReactiveRabbit.Brocker
             _messageHandler = messageHandler;
         }
 
-        protected override async Task HandleMessage(RequestContext requestContext, IBasicProperties _)
+        protected override async Task HandleMessage(RequestContext requestContext, IBasicProperties  properties)
         {
-            await _messageHandler(requestContext);
+ 
+            await _messageHandler(requestContext, properties);
         }
 
 

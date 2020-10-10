@@ -77,7 +77,7 @@ namespace TinyService.ReactiveRabbit.Brocker
                 
                 this._logger.LogError("Error:{0}", ex);
 
-                Channel.BasicNack(args.DeliveryTag, false, requeue: false);
+                //Channel.BasicNack(args.DeliveryTag, false, requeue: false);
             }
         }
 
