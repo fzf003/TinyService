@@ -27,7 +27,7 @@ namespace Sample_1
 
             Random random = new Random();
 
-            Enumerable.Range(1, 10)
+            Enumerable.Range(1, 1)
                          .Select(p =>
                          {
                              productactor.Tell(
@@ -48,7 +48,7 @@ namespace Sample_1
 
 
 
-            productactor.Tell(new ProductActivateCommand(random.Next(1, 10), DateTime.Now));
+            productactor.Tell(new ProductActivateCommand(random.Next(1, 1), DateTime.Now));
 
 
             Console.ReadKey();

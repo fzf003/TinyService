@@ -27,7 +27,7 @@ namespace TinyService.ReactiveRabbit.Brocker
             try
             {
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
-
+               
                 _channel.BasicPublish(exchange: _topic, routingKey: _routingKey, null, body);
             }
             catch (Exception e)

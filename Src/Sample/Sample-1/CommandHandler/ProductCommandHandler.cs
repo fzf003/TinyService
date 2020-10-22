@@ -39,21 +39,22 @@ namespace Sample_1.CommandHandler
 
         public async Task HandleAsync(CreateProductCommand command)
         {
-            var Id=this.idGenerator.Next();
+                var Id = this.idGenerator.Next();
 
-            var product= Product.Create(Id, command.Name, command.Category, command.Description, command.ImageFile, command.Price);
 
-            this.repository.Save(product);
+                var product = Product.Create(Id, command.Name, command.Category, command.Description, command.ImageFile, command.Price);
 
-            var @event = new CreateProductEvent(id: product.Id, name: product.Name, category: product.Category, summary: product.Summary, description: product.Description, imageFile: product.ImageFile, price: product.Price, status: ProductStatus.Draft);
+                this.repository.Save(product);
 
-            await this.eventDispatcher.PublishAsync(@event);
+                var @event = new CreateProductEvent(id: product.Id, name: product.Name, category: product.Category, summary: product.Summary, description: product.Description, imageFile: product.ImageFile, price: product.Price, status: ProductStatus.Draft);
 
-          
+                await this.eventDispatcher.PublishAsync(@event);
+ 
         }
 
         public Task HandleAsync(ProductActivateCommand command)
         {
+         
            var product= _inMemeoryRepository.Get(command.Id);
             product.Activate();
             this._inMemeoryRepository.Save(product);
