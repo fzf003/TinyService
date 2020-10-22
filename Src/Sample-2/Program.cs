@@ -50,7 +50,7 @@ namespace Sample_2
             services.AddLogging(log => log.AddConsole());
             services.AddReactiveRabbit(setting =>
             {
-                setting.HostName = "39.96.8.95";
+                setting.HostName = "localhost";
                 setting.Password = "fzf003";
                 setting.UserName = "fzf003";
                 setting.Port = 5672;

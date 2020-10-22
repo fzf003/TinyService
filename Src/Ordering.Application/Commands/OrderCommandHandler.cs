@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Ordering.Application.Commands;
+using Ordering.Application.Event;
 using Ordering.Domain;
 using Ordering.Domain.Repository;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TinyService.Cqrs.Commands;
+using TinyService.Cqrs.Events.Dispatchers;
 
 namespace Ordering.Application.Commands
 {
@@ -23,7 +25,9 @@ namespace Ordering.Application.Commands
 
         readonly IHttpContextAccessor httpContext;
 
-        public OrderCommandHandler(IOrderRepository orderRepository, ILogger<OrderCommandHandler> logger, IMapper mapper, IHttpContextAccessor httpContext)
+        readonly IEventDispatcher _eventDispatcher;
+
+        public OrderCommandHandler(IOrderRepository orderRepository, ILogger<OrderCommandHandler> logger, IMapper mapper, IHttpContextAccessor httpContext, IEventDispatcher eventDispatcher)
         {
             _orderRepository = orderRepository;
 
@@ -32,6 +36,8 @@ namespace Ordering.Application.Commands
             _mapper = mapper;
 
             this.httpContext = httpContext;
+
+            _eventDispatcher = eventDispatcher;
         }
 
         public async Task HandleAsync(CreateOrderCommand command)
@@ -40,6 +46,12 @@ namespace Ordering.Application.Commands
             var order=_mapper.Map<Order>(command);
 
             await this._orderRepository.CreateOrder(order);
+
+
+           await _eventDispatcher.PublishAsync(new OrderCreated
+            {
+                Order = order
+            }); ;
 
             await this._orderRepository.CommitAsync();
 
