@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Ordering.Domain;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using TinyService.Cqrs.Events;
 
 namespace Ordering.Application.Event
 {
-    public class OrderCreated:IEvent
+    public class OrderCreated:IEvent,INotification
     {
         public Order Order { get; set; }
     }
@@ -25,7 +26,8 @@ namespace Ordering.Application.Event
 
         public Task HandleAsync(OrderCreated @event)
         {
-            _logger.LogInformation($"用户:{@event.Order.CustomerId}创建订单:{@event.Order.Id}成功！");
+           
+            _logger.LogInformation($"用户:{@event.Order.CustomerId}创建订单:{@event.Order.TotalAmount}成功！");
             return Task.CompletedTask;
         }
     }

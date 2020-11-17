@@ -80,7 +80,7 @@ namespace Sample_2.Services
            
             var request = GetJsonPayload<RequestMessage>(context.RequestMessage);
 
-            Console.WriteLine($"fzf003:{request}");
+            Console.WriteLine($"fzf003发送:{request.Payload}");
 
             _logger.LogInformation($"正在处理请求,{request.Payload},回复地址:{context.ReplyTo}");
 

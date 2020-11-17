@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using MediatR;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ordering.Application.Commands;
@@ -25,14 +27,17 @@ namespace Ordering.API.Controllers
 
         readonly ICommandDispatcher _commandDispatcher;
 
+        readonly IMediator _mediator;
 
-        public OrderController(ILogger<OrderController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher)
+        public OrderController(ILogger<OrderController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMediator mediator)
         {
             _logger = logger;
 
             _queryDispatcher = queryDispatcher;
 
             _commandDispatcher = commandDispatcher;
+
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -51,7 +56,10 @@ namespace Ordering.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public Task CreateOrder([FromBody] CreateOrderCommand createOrder)
         {
-            return _commandDispatcher.SendAsync(createOrder);
+
+
+            return this._mediator.Send(createOrder);
+            //_commandDispatcher.SendAsync(createOrder);
         }
 
 

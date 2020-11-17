@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TinyService.Cqrs.Commands;
 
 namespace Ordering.Application.Commands
 {
-    public class CreateOrderCommand : ICommand
+    public class CreateOrderCommand : ICommand, IRequest<string>
     {
         public string CustomerId { get; set; }
         public decimal TotalPrice { get; set; }

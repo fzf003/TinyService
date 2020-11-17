@@ -31,10 +31,10 @@ namespace Sample_2
 
             serviehost.Start();
 
-            var obserable = Observable.Timer(TimeSpan.Zero,TimeSpan.FromSeconds(3))
+            var obserable = Observable.Timer(TimeSpan.Zero,TimeSpan.FromMilliseconds(300))
                                       .Select(p => new RequestMessage(p + "--" + Guid.NewGuid().ToString("N")));
 
-            obserable.Subscribe(serviehost.GetRequestEndPoint);
+            obserable.Retry().Subscribe(serviehost.GetRequestEndPoint);
 
           
 
