@@ -8,13 +8,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace TinyServer.ReactiveSocket
 {
-    public class SocketAcceptClient : IDisposable
+    public class SocketAcceptClient :  ISocketAcceptClient
     {
         readonly Socket _socket;
 
@@ -35,24 +36,28 @@ namespace TinyServer.ReactiveSocket
         readonly string connectonId = string.Empty;
 
         readonly CancellationTokenSource cancellation = new CancellationTokenSource();
-        public SocketAcceptClient(Socket socket, SocketServer listenerserver, ILoggerFactory loggerFactory,bool heartbeat=false)
+
+        readonly Subject<byte[]> writersubject = new Subject<byte[]>();
+        public SocketAcceptClient(Socket socket, SocketServer listenerserver, ILoggerFactory loggerFactory)
         {
             this._logger = loggerFactory.CreateLogger<SocketAcceptClient>();
 
             this._socket = socket;
- 
+
             this._heartbeat = new Heartbeat(_socket, loggerFactory);
+
+            this._heartbeat.OnDisconnect += HeartbeatProcess;
 
             this._networkstream = new NetworkStream(_socket);
 
             this._pipeReader = PipeReader.Create(_networkstream);
 
             this._pipeWriter = PipeWriter.Create(_networkstream);
- 
+
             this._listenerserver = listenerserver;
 
-            this._heartbeat.OnDisconnect += HeartbeatProcess;
- 
+            this._heartbeat.Start();
+
             connectonId = $"{this._socket.RemoteEndPoint}";
 
         }
@@ -67,12 +72,8 @@ namespace TinyServer.ReactiveSocket
 
         void HeartbeatProcess(HeartbeatEvent @event)
         {
-
             this._listenerserver.RemoveConnection(this);
-
-            _logger.LogDebug($"{DateTime.Now}----{_socket.RemoteEndPoint}连接断开....");
-
-            this.Dispose();
+            _logger.LogDebug($"{DateTime.Now}----{RemoteConnectionId}连接断开....");
         }
 
 
@@ -113,22 +114,28 @@ namespace TinyServer.ReactiveSocket
                         }
 
                     }
-                    catch 
+                    catch
                     {
-                       break;
+                        break;
                     }
                 }
 
                 _pipeReader?.Complete();
                 observer.OnCompleted();
+
             });
         }
 
-        // public PipeReader Reader => this._pipeReader;
+        public Task SendMessageAsync(byte[] message)
+        {
+            return this._pipeWriter.SendMessageAsync(message).AsTask();
+        }
 
-         public PipeWriter Writer => this._pipeWriter;
+        public Task SendMessageAsync(string message)
+        {
+            return this._pipeWriter.SendAsync(message.ToMessageBuffer()).AsTask();
+        }
 
-        
 
         public void Dispose()
         {

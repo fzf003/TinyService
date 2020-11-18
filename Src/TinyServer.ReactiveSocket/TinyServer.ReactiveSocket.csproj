@@ -2,6 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>fzf003</Authors>
+    <RepositoryType></RepositoryType>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <RepositoryUrl>https://github.com/fzf003/TinyService/</RepositoryUrl>
+    <Version>1.0.1</Version>
+    <Description>TinyServer.ReactiveSocket 是独立的反应式的轻量级通信组件
+支持以下功能 ：
+轻量
+异步连接和断开
+可观察的接受和接受
+支持.NET Standard 2.0
+响应式扩展
+简单直观的API
+快…</Description>
   </PropertyGroup>
 
   <ItemGroup>

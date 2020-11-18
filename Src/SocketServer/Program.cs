@@ -5,41 +5,48 @@ using TinyServer.ReactiveSocket;
 using System.Net;
 using System.Text;
 using System.Reactive.Linq;
+using System.IO.Pipelines;
+using System.IO;
+using System.Reactive;
 
 namespace SocketServer
 
 {
     class Program
     {
+        static ILogger<Program> logger;
+
+        static ILoggerFactory loggerFactory;
         static void Main(string[] args)
         {
-            var loggerfactory = LoggerFactory.Create(options =>
+            loggerFactory = LoggerFactory.Create(options =>
             {
                 options.SetMinimumLevel(LogLevel.Information)
                        .AddConsole();
             });
 
-            var logger = loggerfactory.CreateLogger<Program>();
+            logger = loggerFactory.CreateLogger<Program>();
 
-            using var server = TinySocketServer.CreateServer(new IPEndPoint(IPAddress.Loopback, 8087), loggerfactory);
+            var serverendpoint = new IPEndPoint(IPAddress.Loopback, 8087);
 
-            server.AcceptClientObservable.Subscribe(client =>
-               {
-                   client.RevicedObservable
-                         .Select(bytes => bytes.ToMessage())
-                         .Subscribe(async message =>
-                           {
-                               logger.LogInformation(message);
-
-                               await client.Writer.SendAsync(DateTime.Now.ToString().ToMessageBuffer());
-  
-                           });
-               });
+            using var server = TinySocketServer.CreateServer(serverendpoint, loggerFactory);
+ 
+            server.AcceptClientObservable.Subscribe(ReplyClient);
 
             server.Start();
 
-
             Console.ReadKey();
         }
-    }
-}
+
+        static void ReplyClient(ISocketAcceptClient acceptClient)
+        {
+            acceptClient.RevicedObservable
+                        .Select(bytes=>bytes.ToMessage())
+                        .PrintHandler(new PrintMessageHandle(loggerFactory))
+                        .Select(bytes => Observable.FromAsync(() => acceptClient.SendMessageAsync(DateTime.Now.ToString().ToMessageBuffer())))
+                        .Concat()
+                        .Catch<Unit, Exception>(ex => Observable.Empty<Unit>())
+                        .Subscribe();
+        }
+     }
+ }

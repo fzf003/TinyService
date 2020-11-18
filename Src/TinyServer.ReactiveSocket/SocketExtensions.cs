@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Buffers;
 using System.IO.Pipelines;
 using System.Threading;
+using System.Reactive.Linq;
 
 namespace TinyServer.ReactiveSocket
 {
@@ -25,27 +26,22 @@ namespace TinyServer.ReactiveSocket
 
         public static async ValueTask SendAsync(this PipeWriter writer, ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                await writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                writer.Complete(ex);
-            }
+              await writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
         }
 
 
         public static async ValueTask SendAsync(this PipeWriter writer, byte[] buffer, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                await writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
-            }catch(Exception ex)
-            {
-                writer.Complete(ex);
-            }
+              await writer.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
         }
+
+        public static ValueTask<FlushResult> SendMessageAsync(this PipeWriter writer, byte[] buffer, CancellationToken cancellationToken = default)
+        {
+            return writer.WriteAsync(buffer, cancellationToken);
+        }
+
+
+       
 
     }
 }

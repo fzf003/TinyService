@@ -137,11 +137,9 @@ namespace TinyServer.ReactiveSocket
 
         void ShutDownSocket()
         {
-
             this._socket?.Shutdown(SocketShutdown.Both);
             this._socket?.Close(1000);
             _logger.LogInformation("连接关闭完成....");
-
         }
 
         public Task SendMessageAsync(byte[] message)

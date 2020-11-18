@@ -12,56 +12,33 @@ namespace SocketClient
     class Program
     {
         static ISocketClient client;
+        static ILoggerFactory loggerFactory;
         static void Main(string[] args)
         {
-            var loggerfactory = LoggerFactory.Create(options =>
+            loggerFactory = LoggerFactory.Create(options =>
             {
                 options.SetMinimumLevel(LogLevel.Information)
                        .AddConsole();
             });
 
-            var logger = loggerfactory.CreateLogger<Program>();
+            var logger = loggerFactory.CreateLogger<Program>();
 
             string Replymessage = $"{DateTime.Now.ToString()}-{Guid.NewGuid().ToString("N")}";
 
-            using (client = TinySocketClient.CreateClient(new IPEndPoint(IPAddress.Loopback, 8087), loggerfactory))
+            using (client = TinySocketClient.CreateClient(new IPEndPoint(IPAddress.Loopback, 8087), loggerFactory))
             {
 
                 client.ReceiveMessageObservable
-                    .Select(p => p.ToMessage())
-                    .Do(PrintMessage)
-                    .Subscribe(onNext: PrintMessage, onError: PrintError,onCompleted: Completed);
+                      .Select(p => p.ToMessage())
+                      .Subscribe(new PrintMessageHandle(loggerFactory));
+ 
 
-               
-                client.SendMessageAsync(DateTime.Now.ToString().ToMessageBuffer());
-
+                client.SendMessageAsync($"{Guid.NewGuid().ToString("N")}");
 
                 Console.ReadKey();
+
             }
         }
 
-        static void PrintMessage(Unit message)
-        {
-            Console.WriteLine(message);
-        }
-
-        static void PrintMessage(string message)
-        {
-            Console.WriteLine(message);
-            client.SendMessageAsync(message);
-               
-        }
-
-        static void PrintError(Exception exception)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(exception.Message);
-            Console.ResetColor();
-        }
-
-        static void Completed()
-        {
-            Console.WriteLine("Done...");
-        }
     }
 }

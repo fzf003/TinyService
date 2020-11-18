@@ -5,7 +5,7 @@ namespace TinyServer.ReactiveSocket
 {
     public interface ISocketServer:IDisposable
     {
-        IObservable<SocketAcceptClient> AcceptClientObservable { get; }
+        IObservable<ISocketAcceptClient> AcceptClientObservable { get; }
         
         void Start();
     }

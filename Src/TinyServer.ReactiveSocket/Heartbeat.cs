@@ -36,22 +36,21 @@ namespace TinyServer.ReactiveSocket
         readonly Socket _socket;
 
         public event Action<HeartbeatEvent> OnDisconnect;
-
+ 
         public Heartbeat(Socket socket, ILoggerFactory loggerFactory)
         {
             this._socket = socket;
-            HeartbeatInterval = TimeSpan.FromSeconds(5);
             _heartbeatStream = Observable.Timer(HeartbeatInterval, HeartbeatInterval);
             _loggerFactory = loggerFactory;
             _logger = _loggerFactory.CreateLogger<Heartbeat>();
         }
 
-        public TimeSpan HeartbeatInterval { get; }
+         TimeSpan HeartbeatInterval => TimeSpan.FromSeconds(1);
 
         public void Dispose()
         {
             _disp.Dispose();
-            _logger.LogDebug($"Stopped heartbeat for {_socket.RemoteEndPoint}");
+            _logger.LogDebug($"停止心跳探测 {_socket.RemoteEndPoint}");
         }
 
         public Task Start()
@@ -72,12 +71,9 @@ namespace TinyServer.ReactiveSocket
 
                 var handler = OnDisconnect;
 
-                handler?.Invoke(new HeartbeatEvent(_socket,socketstate));
+                handler?.Invoke(new HeartbeatEvent(_socket, socketstate));
             }
-            else
-            {
-                _logger.LogDebug($"{DateTime.Now}-Endpoint:{_socket.RemoteEndPoint}正常:{socketstate}");
-            }
+
         }
     }
 }

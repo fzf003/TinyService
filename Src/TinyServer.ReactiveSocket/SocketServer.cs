@@ -15,11 +15,11 @@ namespace TinyServer.ReactiveSocket
     {
         readonly Socket _serversocket;
 
-        readonly Subject<SocketAcceptClient> socketobserver = new Subject<SocketAcceptClient>();
+        readonly Subject<ISocketAcceptClient> socketobserver = new Subject<ISocketAcceptClient>();
 
         readonly CompositeDisposable socketDisposable;
 
-        readonly List<SocketAcceptClient> connections = new List<SocketAcceptClient>();
+        readonly List<ISocketAcceptClient> connections = new List<ISocketAcceptClient>();
 
         readonly ILogger<SocketServer> _logger;
 
@@ -51,7 +51,7 @@ namespace TinyServer.ReactiveSocket
 
         }
 
-        public IObservable<SocketAcceptClient> AcceptClientObservable => socketobserver.AsObservable();
+        public IObservable<ISocketAcceptClient> AcceptClientObservable => socketobserver.AsObservable();
 
         public void Start()
         {
@@ -62,7 +62,9 @@ namespace TinyServer.ReactiveSocket
             var disp = Observable.Defer(() => Observable.FromAsync(() => _serversocket.AcceptAsync()))
                                  .Do(PrintLog, PrintError)
                                  .Repeat()
-                                 .Subscribe(ProcessLinesAsync);
+                                 .Subscribe(ProcessLinesAsync, PrintError, ()=> {
+                                     Console.WriteLine("Server Socket Done...");
+                                 });
 
             socketDisposable.Add(disp);
 
@@ -100,10 +102,10 @@ namespace TinyServer.ReactiveSocket
             _logger.LogInformation($"客户端:{socket.RemoteEndPoint}已连接,当前共有{connections.Count}个客户端!");
         }
 
-        internal void RemoveConnection(SocketAcceptClient socketclient)
+        internal void RemoveConnection(ISocketAcceptClient socketclient)
         {
             this.connections.Remove(socketclient);
-
+            socketclient?.Dispose();
             _logger.LogInformation($"客户端:{socketclient.RemoteConnectionId}已断开,当前在线:{connections.Count}个客户端");
         }
 
@@ -125,10 +127,7 @@ namespace TinyServer.ReactiveSocket
                     });
                 });
             }
-
-          
-
-
+ 
             _logger.LogInformation("服务端已关闭....");
         }
 
