@@ -31,7 +31,7 @@ namespace Ordering.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                    //.AddDiscoveryOptions(GetConfiguration())
+                    .AddDiscoveryOptions(GetConfiguration())
                               .UseStartup<Startup>();
                 })
               .ConfigureLogging(config => {

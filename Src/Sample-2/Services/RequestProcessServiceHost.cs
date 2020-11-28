@@ -48,13 +48,13 @@ namespace Sample_2.Services
             Console.WriteLine($"{InstanceId}启动.....");
         
             ///注册请求回复处理器
-            RegisterCallResponse(exchangeName: exchangename, queueName: ququename,routingKey: "logs", onMessage: RequestProcess);
+            //RegisterCallResponse(exchangeName: exchangename, queueName: ququename,routingKey: "logs", onMessage: RequestProcess);
 
             ///接受回复消息
-            RegisterCall(exchangeName: exchangename,queueName: "PayService.fzf003", routingKey: "logs", onMessage: CallbackResponseHandle);
+           // RegisterCall(exchangeName: exchangename,queueName: "PayService.fzf003", routingKey: "logs", onMessage: CallbackResponseHandle);
 
             ///单向处理
-            // RegisterCall(queueName: ququename, onMessage: ProcesseHandle);
+             RegisterCall(exchangeName: exchangename,queueName: ququename, onMessage: ProcesseHandle);
             ///监听Topic消息
             /// _messageBroker.SubscribeToTopic<RequestMessage>(exchangename,"logs").Subscribe(p=>Console.WriteLine("Payload:"+p.Payload));
         }

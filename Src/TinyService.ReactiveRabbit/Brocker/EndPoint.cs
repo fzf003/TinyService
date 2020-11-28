@@ -24,17 +24,10 @@ namespace TinyService.ReactiveRabbit.Brocker
 
         public void PushMessage(T obj)
         {
-            try
-            {
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
+                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
                
-                _channel.BasicPublish(exchange: _topic, routingKey: _routingKey, null, body);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Could not send message {e.Message}");
-            }
-        }
+                _channel.BasicPublish(exchange: _topic, routingKey: _routingKey, _channel.CreateBasicProperties(), body);
+         }
 
         public void PushError(Exception ex)
         {

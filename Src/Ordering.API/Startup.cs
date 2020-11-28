@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -27,7 +26,7 @@ using Ordering.Infrastructure.DataContext;
 using TinyService.Cqrs;
 using TinyService.Discovery.Consul;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
-
+using Microsoft.OpenApi.Models;
 namespace Ordering.API
 {
     public class Startup
@@ -70,8 +69,8 @@ namespace Ordering.API
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
             services.AddHttpContextAccessor();
-           // services.AddDiscovery();
-            services.AddMediatR(assemblies);
+            services.AddDiscovery();
+           // services.AddMediatR(assemblies);
             services.AddAutoMapper(typeof(OrderMappingProfile));
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddDbContext<OrderContext>(c=>c.UseSqlServer(ConnectionStr, x=> {x.EnableRetryOnFailure(3);}))
@@ -79,6 +78,12 @@ namespace Ordering.API
                     .AddEventHandlers(assemblies)
                     .AddCommandHandlers(assemblies)
                     .AddQueryHandlers(assemblies);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering.API", Version = "v1" });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,15 +92,18 @@ namespace Ordering.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OrderSercice v1"));
+
             }
- 
+
             else
             {
                 app.UseExceptionHandler("/error");
             }
 
 
-            // app.UseDiscovery();
+            app.UseDiscovery();
             app.UseHttpsRedirection();
             app.UseSession();
             app.UseRouting();

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Ordering.Application.Event;
 using Ordering.Domain;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Ordering.Application.Commands
 {
-    public class PingHandler : IRequestHandler<CreateOrderCommand, string>
+   /* public class PingHandler : IRequestHandler<CreateOrderCommand, string>
     {
          
 
@@ -70,5 +69,5 @@ namespace Ordering.Application.Commands
 
             return Task.CompletedTask;
         }
-    }
+    }*/
 }

@@ -39,7 +39,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReactiveSocket", "ReactiveS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocketClient", "SocketClient\SocketClient.csproj", "{BEB044A7-6036-41AC-B9CE-AA2EF4A025D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketServer", "SocketServer\SocketServer.csproj", "{E8823DE3-608D-4FD5-B045-D8BD797ED6C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocketServer", "SocketServer\SocketServer.csproj", "{E8823DE3-608D-4FD5-B045-D8BD797ED6C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderClient", "OrderClient\OrderClient.csproj", "{CC12AFF3-AF89-4399-AB8A-7B38ECD59D58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{E8823DE3-608D-4FD5-B045-D8BD797ED6C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8823DE3-608D-4FD5-B045-D8BD797ED6C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8823DE3-608D-4FD5-B045-D8BD797ED6C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC12AFF3-AF89-4399-AB8A-7B38ECD59D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC12AFF3-AF89-4399-AB8A-7B38ECD59D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC12AFF3-AF89-4399-AB8A-7B38ECD59D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC12AFF3-AF89-4399-AB8A-7B38ECD59D58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +131,7 @@ Global
 		{FF69477A-B54E-40E2-B878-63A46B449D25} = {74459250-90EA-4625-8318-57D01E543610}
 		{BEB044A7-6036-41AC-B9CE-AA2EF4A025D2} = {FF69477A-B54E-40E2-B878-63A46B449D25}
 		{E8823DE3-608D-4FD5-B045-D8BD797ED6C7} = {FF69477A-B54E-40E2-B878-63A46B449D25}
+		{CC12AFF3-AF89-4399-AB8A-7B38ECD59D58} = {CC3C5CCD-FB25-4474-BDB5-79E296915668}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7196C76-B0F9-4C82-AAF4-B9E8EE82FB70}

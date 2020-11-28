@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ordering.Domain;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using TinyService.Cqrs.Events;
 
 namespace Ordering.Application.Event
 {
-    public class OrderCreated:IEvent,INotification
+    public class OrderCreated:IEvent
     {
         public Order Order { get; set; }
     }

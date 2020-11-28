@@ -42,8 +42,9 @@ namespace SocketServer
         {
             acceptClient.RevicedObservable
                         .Select(bytes=>bytes.ToMessage())
+                        .Where(message=>!string.IsNullOrWhiteSpace(message))
                         .PrintHandler(new PrintMessageHandle(loggerFactory))
-                        .Select(bytes => Observable.FromAsync(() => acceptClient.SendMessageAsync(DateTime.Now.ToString().ToMessageBuffer())))
+                        .Select(bytes => Observable.FromAsync(() => acceptClient.SendMessageAsync(DateTime.Now.ToString())))
                         .Concat()
                         .Catch<Unit, Exception>(ex => Observable.Empty<Unit>())
                         .Subscribe();
