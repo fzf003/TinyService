@@ -24,7 +24,6 @@ namespace Ordering.API.Controllers
         private readonly IQueryDispatcher _queryDispatcher;
 
         readonly ICommandDispatcher _commandDispatcher;
-
  
         public OrderController(ILogger<OrderController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher)
         {
@@ -78,7 +77,7 @@ namespace Ordering.API.Controllers
         }
 
         [HttpGet]
-        [Route("QueryOrder/{id}")]
+        [Route("{id:long}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<OrderDto> QueryDetail([FromRoute]long id)

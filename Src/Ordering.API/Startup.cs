@@ -92,8 +92,6 @@ namespace Ordering.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OrderSercice v1"));
 
             }
 
@@ -101,6 +99,10 @@ namespace Ordering.API
             {
                 app.UseExceptionHandler("/error");
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OrderSercice v1"));
+
 
 
             app.UseDiscovery();

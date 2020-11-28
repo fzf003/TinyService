@@ -42,18 +42,16 @@ namespace Ordering.Application.Commands
 
         public async Task HandleAsync(CreateOrderCommand command)
         {
-
             var order=_mapper.Map<Order>(command);
 
             await this._orderRepository.CreateOrder(order);
-
-
-           await _eventDispatcher.PublishAsync(new OrderCreated
+ 
+            await this._orderRepository.CommitAsync();
+ 
+            await _eventDispatcher.PublishAsync(new OrderCreated
             {
                 Order = order
-            }); ;
-
-            await this._orderRepository.CommitAsync();
+            });
 
             _logger.LogInformation("订单创建完成.....");
         }
@@ -61,9 +59,13 @@ namespace Ordering.Application.Commands
         public async  Task HandleAsync(CancelOrderCommand command)
         {
             await this._orderRepository.CacnelOrder(command.OrderNumber);
-           
 
             await this._orderRepository.CommitAsync();
+
+            await _eventDispatcher.PublishAsync(new OrderCancel
+            {
+                OrderId = command.OrderNumber
+            });
         }
     }
 }

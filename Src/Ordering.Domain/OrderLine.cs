@@ -15,7 +15,7 @@ namespace Ordering.Domain
         [Column(TypeName = "nvarchar(200)")]
         public string Name { get; set; }
         public int Quantity { get; set; }
-        [Column(TypeName = "decimal(5, 2)")]
+        [Column(TypeName = "decimal(15, 2)")]
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice => Quantity * UnitPrice;
 

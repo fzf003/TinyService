@@ -11,7 +11,7 @@ namespace Ordering.Domain
         [Column(TypeName = "nvarchar(200)")]
         public string CustomerId { get; set; }
         
-        [Column(TypeName = "decimal(5, 2)")]
+        [Column(TypeName = "decimal(15, 2)")]
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; }
 
