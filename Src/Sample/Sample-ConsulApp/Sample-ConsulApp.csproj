@@ -11,6 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TinyService.Discovery.Consul\TinyService.Discovery.Consul.csproj" />
+    <ProjectReference Include="..\..\TinyService.Discovery.Consul\TinyService.Discovery.Consul.csproj" />
   </ItemGroup>
 </Project>

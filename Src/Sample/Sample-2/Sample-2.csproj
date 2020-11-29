@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-     <ProjectReference Include="..\TinyService.ReactiveRabbit\TinyService.ReactiveRabbit.csproj" />
+    <ProjectReference Include="..\..\TinyService.ReactiveRabbit\TinyService.ReactiveRabbit.csproj" />
   </ItemGroup>
 
 </Project>
