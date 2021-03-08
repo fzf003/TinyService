@@ -1,0 +1,49 @@
+{
+  "ReverseProxy": {
+    "Routes": [
+      {
+        "RouteId": "orderservice",
+        "ClusterId": "order-cluster",
+        "Match": {
+          "Path": "/orderservice/{**catch-all}"
+        },
+        "Transforms": [
+          {
+            "PathRemovePrefix": "/orderservice"
+          }
+        ]
+      }
+    ],
+    "Clusters": {
+      "order-cluster": {
+        "HealthCheck": {
+          "Active": {
+            "Enabled": "true",
+            "Interval": "00:00:03",
+            "Timeout": "00:00:10",
+            "Policy": "ConsecutiveFailures",
+            "Path": "/"
+          }
+        },
+        "Passive": {
+          "Enabled": "true",
+          "Policy": "TransportFailureRate",
+          "ReactivationPeriod": "00:00:30"
+        },
+        "LoadBalancingPolicy": "RoundRobin",
+        "Destinations": {
+          "order-cluster/destination1": {
+            "Address": "http://localhost:8900",
+            "Health": "http://localhost:8900"
+          },
+          "order-cluster/destination2": {
+            "Address": "http://localhost:9900",
+            "Health": "http://localhost:9900"
+          }
+
+        }
+      }
+
+    }
+  }
+}

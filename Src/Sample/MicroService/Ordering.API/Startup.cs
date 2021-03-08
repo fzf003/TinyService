@@ -24,9 +24,11 @@ using Ordering.Domain.Repository;
 using Ordering.Infrastructure;
 using Ordering.Infrastructure.DataContext;
 using TinyService.Cqrs;
-using TinyService.Discovery.Consul;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+
 namespace Ordering.API
 {
     public class Startup
@@ -69,7 +71,7 @@ namespace Ordering.API
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
             services.AddHttpContextAccessor();
-            services.AddDiscovery();
+             
            // services.AddMediatR(assemblies);
             services.AddAutoMapper(typeof(OrderMappingProfile));
             services.AddTransient<IOrderRepository, OrderRepository>();
@@ -83,6 +85,17 @@ namespace Ordering.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering.API", Version = "v1" });
             });
+
+            services.AddHealthChecksUI()
+                   .AddInMemoryStorage();
+
+            services.AddHealthChecks()
+                    .AddConsul(o =>
+                    {
+                        o.HostName = "localhost";
+                        o.Port = 8500;
+                    }).AddRedis("127.0.0.1:6379")
+                      .AddSqlServer(this.Configuration.GetConnectionString("OrderDb"));
 
         }
 
@@ -103,9 +116,16 @@ namespace Ordering.API
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OrderSercice v1"));
 
+            app.UseHealthChecks("/Health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            app.UseHealthChecksUI();
 
 
-            app.UseDiscovery();
+            
             app.UseHttpsRedirection();
             app.UseSession();
             app.UseRouting();
@@ -122,7 +142,18 @@ namespace Ordering.API
                     await context.Response.WriteAsync("pong!!!");
                 });
 
-                endpoints.MapGet("/", async (c) => {
+                endpoints.Map("/ui",  context => {
+
+                    context.Response.Redirect("/HealthChecks-UI");
+                    return Task.CompletedTask;
+                });
+
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Hello from order One");
+                });
+
+                endpoints.MapGet("/InitDb", async (c) => {
 
                     var orderContext=c.RequestServices.GetService<OrderContext>();
                     var loggerfactory = c.RequestServices.GetService<ILoggerFactory>();
