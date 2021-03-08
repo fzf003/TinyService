@@ -31,7 +31,7 @@ namespace TinyService.ReactiveRabbit.Brocker
             }
         }
 
-        protected RemoteProcedureBase(IModel channel, string queueName, string exchangeName, string routingKey = "", bool durable = true, ILoggerFactory loggerFactory = null)
+        protected RemoteProcedureBase(IModel channel, string queueName, string exchangeName, string routingKey = "", bool durable = true,IDictionary<string,object> arguments=null, ILoggerFactory loggerFactory = null)
         {
             this._loggerFactory = loggerFactory;
 
@@ -46,7 +46,7 @@ namespace TinyService.ReactiveRabbit.Brocker
                 durable: durable,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null);
+                arguments: arguments);
 
             Channel.BasicQos(0, 1, false);
 

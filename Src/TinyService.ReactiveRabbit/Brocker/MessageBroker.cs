@@ -27,9 +27,9 @@ namespace TinyService.ReactiveRabbit.Brocker
             _logger = loggerFactory.CreateLogger<MessageBroker>();
         }
 
-        public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, IBasicProperties, Task> onMessage = null)
+        public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, IBasicProperties, Task> onMessage = null,IDictionary<string,object> arguments=null)
         {
-            return new RemoteSubscriptionRegistration(_channel, queueName: queueName, exchangeName: exchangeName, routingKey: routingKey, messageHandler: onMessage, loggerFactory: _loggerFactory);
+            return new RemoteSubscriptionRegistration(_channel, queueName: queueName, exchangeName: exchangeName, routingKey: routingKey, messageHandler: onMessage, loggerFactory: _loggerFactory,arguments: arguments);
         }
 
         public IDisposable RegisterCallResponse<TResponse>(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext,  Task<TResponse>> onMessage=null)

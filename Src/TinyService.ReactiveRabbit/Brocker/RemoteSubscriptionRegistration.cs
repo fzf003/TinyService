@@ -15,8 +15,8 @@ namespace TinyService.ReactiveRabbit.Brocker
 
         readonly ILoggerFactory _loggerFactory;
 
-        public RemoteSubscriptionRegistration(IModel channel, string queueName, string exchangeName = "", string routingKey = "", bool durablequeue = true, Func<RequestContext, IBasicProperties, Task> messageHandler = null, ILoggerFactory loggerFactory=null)
-            : base(channel, queueName, exchangeName, routingKey, durablequeue, loggerFactory: loggerFactory)
+        public RemoteSubscriptionRegistration(IModel channel, string queueName, string exchangeName = "", string routingKey = "", bool durablequeue = true, Func<RequestContext, IBasicProperties, Task> messageHandler = null, ILoggerFactory loggerFactory=null,IDictionary<string,object> arguments=null)
+            : base(channel, queueName, exchangeName, routingKey, durablequeue, loggerFactory: loggerFactory,arguments:arguments)
         {
             this._loggerFactory = loggerFactory;
 

@@ -25,9 +25,9 @@ namespace TinyService.ReactiveRabbit.Brocker
         public void PushMessage(T obj)
         {
                  var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj));
-               
-                _channel.BasicPublish(exchange: _topic, routingKey: _routingKey, _channel.CreateBasicProperties(), body);
-         }
+                 var props= _channel.CreateBasicProperties();
+                 _channel.BasicPublish(exchange: _topic, routingKey: _routingKey, props, body);
+        }
 
         public void PushError(Exception ex)
         {
