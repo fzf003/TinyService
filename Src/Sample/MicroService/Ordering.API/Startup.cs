@@ -28,6 +28,7 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
+using Steeltoe.Management.Tracing;
 
 namespace Ordering.API
 {
@@ -96,6 +97,12 @@ namespace Ordering.API
                         o.Port = 8500;
                     }).AddRedis("127.0.0.1:6379")
                       .AddSqlServer(this.Configuration.GetConnectionString("OrderDb"));
+
+
+
+            services.AddDistributedTracing(Configuration, builder => {
+                builder.UseZipkinWithTraceOptions(services);
+            });
 
         }
 

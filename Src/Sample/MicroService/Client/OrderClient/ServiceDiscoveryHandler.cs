@@ -9,6 +9,8 @@ using TinyService.Discovery.Consul;
 
 namespace OrderClient
 {
+
+    [Obsolete("废弃")]
     public class ServiceDiscoveryHandler : DelegatingHandler
     {
         readonly IClusterClinet clusterClinet;

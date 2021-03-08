@@ -13,6 +13,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TinyService.Discovery.Consul;
 using Microsoft.OpenApi.Models;
+using Steeltoe.Common.Http.Discovery;
+
 namespace OrderClient
 {
     public class Startup
@@ -28,16 +30,17 @@ namespace OrderClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDiscoveryClient(cfg => {
-                cfg.Address = new Uri("http://localhost:8500");
-            });
- 
-            services.AddTransient<ServiceDiscoveryHandler>();
+            //services.AddTransient<DiscoveryHttpMessageHandler>();
+
             services.AddHttpClient<OrderClientService>(c =>
             {
-                c.BaseAddress = new Uri("http://OrderingAPI");
+                c.BaseAddress = new Uri("http://ordergateway/orderservice");
 
-            }).AddHttpMessageHandler<ServiceDiscoveryHandler>();
+            }).AddServiceDiscovery()
+           
+             .AddRoundRobinLoadBalancer();
+
+          
 
             services.AddSwaggerGen(c =>
             {
