@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace TinyService.ServiceBus
             {
                 if (msg is DeadLetterEvent letter)
                 {
-                    _logger.InfoFormat("[DeadLetter] '{0}' got '{1}:{2}' from '{3}'", letter.Pid.ToShortString(),
+                    _logger.LogInformation("[DeadLetter] '{0}' got '{1}:{2}' from '{3}'", letter.Pid.ToShortString(),
                          letter.Message.GetType().Name, letter.Message, letter.Sender?.ToShortString());
                 }
             });

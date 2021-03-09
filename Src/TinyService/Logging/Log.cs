@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +17,12 @@ namespace TinyService.Logging
 
         public static ILogger CreateLogger(string categoryName)
         {
-            return _loggerFactory.Create(categoryName);
+            return _loggerFactory.CreateLogger(categoryName);
         }
 
         public static ILogger CreateLogger<T>()
         {
-            return _loggerFactory.Create(typeof(T));
+            return _loggerFactory.CreateLogger(typeof(T));
         }
     }
 

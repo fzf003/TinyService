@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-     <PackageId>TinyService</PackageId>
-    <Version>1.0.1</Version>
+     <PackageId>TinyService.ReactiveRabbit</PackageId>
+    <Version>1.1.0</Version>
     <Authors>fzf003</Authors>
      <Company></Company>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <RepositoryUrl>https://github.com/fzf003/TinyService/</RepositoryUrl>
     <Description>
       TinyService.ReactiveRabbit 是RabbmitMq的反应式组件，可用于事件驱动的分布式系统。
@@ -14,6 +14,7 @@
       简单直观的API
     </Description>
     <PackageReleaseNotes>TinyService.ReactiveRabbit 是RabbmitMq的反应式组件，可用于事件驱动的分布式系统。</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
 <ItemGroup>

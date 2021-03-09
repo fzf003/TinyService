@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>fzf003</Authors>
+    <Description>基于CQRS模式的标准组件实现，可用于领域驱动或事件驱动的分布式应用程序</Description>
+    <RepositoryUrl>https://github.com/fzf003/TinyService</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

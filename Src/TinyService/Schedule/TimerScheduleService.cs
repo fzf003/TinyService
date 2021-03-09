@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace TinyService.Schedule
 
         public TimerScheduleService(ILoggerFactory loggerFactory)
         {
-             _logger = loggerFactory.Create(typeof(TimerScheduleService));
+             _logger = loggerFactory.CreateLogger(typeof(TimerScheduleService));
         }
 
         public void StartTask(string name, Action action, int dueTime, int period)
@@ -69,7 +70,7 @@ namespace TinyService.Schedule
                 {
                     if (_logger != null)
                     {
-                        _logger.ErrorFormat(string.Format("定时器异常, 任务名称: {0}, 开始时间: {1}, 触发周期: {2}", task.Name, task.DueTime, task.Period), ex);
+                        _logger.LogError(string.Format("定时器异常, 任务名称: {0}, 开始时间: {1}, 触发周期: {2}", task.Name, task.DueTime, task.Period), ex);
                     }
                 }
                 finally
@@ -86,7 +87,7 @@ namespace TinyService.Schedule
                     {
                          if (_logger != null)
                         {
-                            _logger.ErrorFormat(string.Format("定时器异常, 任务名称: {0}, 开始时间: {1}, 触发周期: {2}", task.Name, task.DueTime, task.Period), ex);
+                            _logger.LogError(string.Format("定时器异常, 任务名称: {0}, 开始时间: {1}, 触发周期: {2}", task.Name, task.DueTime, task.Period), ex);
                         }
                     }
                 }

@@ -19,7 +19,7 @@ namespace Sample_1
         {
             IServiceProvider serviceProvider = BuildServiceCollection().BuildServiceProvider();
            
-            Log.SetLoggerFactory(serviceProvider.GetService<TinyService.Logging.ILoggerFactory>());
+            Log.SetLoggerFactory(serviceProvider.GetService<ILoggerFactory>());
 
             var factory =serviceProvider.GetService<IActorFactory>();
 
