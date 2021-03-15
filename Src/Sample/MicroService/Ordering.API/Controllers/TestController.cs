@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ordering.API.Models;
+using Ordering.API.Services;
 
 namespace Ordering.API.Controllers
 {
@@ -18,9 +19,19 @@ namespace Ordering.API.Controllers
 
         readonly ILogger<TestController> _logger;
 
-        public TestController(ILogger<TestController> logger)
+        readonly UserTokenService _userTokenService;
+
+        public TestController(ILogger<TestController> logger, UserTokenService userTokenService)
         {
             _logger = logger;
+            _userTokenService = userTokenService;
+        }
+
+        [HttpPost("gettoken")]
+        public   UserToken GetToken(string username,string role)
+        {
+            
+            return new UserToken {  Token = this._userTokenService.GenUserToken(username, role) };
         }
 
         [HttpPost("UpPets/{id:int}.{format?}")]

@@ -1,15 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using TinyService.Discovery.Consul;
+
 
 namespace OrderClient
 {
+  
 
+    /*
     [Obsolete("废弃")]
     public class ServiceDiscoveryHandler : DelegatingHandler
     {
@@ -48,5 +53,5 @@ namespace OrderClient
             return await response;
 
         }
-    }
+    }*/
 }

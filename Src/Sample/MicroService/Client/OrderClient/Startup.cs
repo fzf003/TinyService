@@ -11,9 +11,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using TinyService.Discovery.Consul;
 using Microsoft.OpenApi.Models;
 using Steeltoe.Common.Http.Discovery;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace OrderClient
 {
@@ -29,16 +30,18 @@ namespace OrderClient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            //services.AddTransient<DiscoveryHttpMessageHandler>();
+            services.AddDistributedMemoryCache();
 
-            services.AddHttpClient<OrderClientService>(c =>
+            services.AddControllers();
+            services.AddHostedService<UserTokenWoker>();
+            services.AddHttpClient<OrderClientService>((s,c) =>
             {
                 c.BaseAddress = new Uri("http://ordergateway/orderservice");
-
-            }).AddServiceDiscovery()
-           
-             .AddRoundRobinLoadBalancer();
+                var cache= s.GetService<IDistributedCache>();
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", cache.GetString("fzf003"));
+            })
+              .AddServiceDiscovery()
+              .AddRoundRobinLoadBalancer();
 
           
 

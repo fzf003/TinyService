@@ -29,6 +29,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
 using Steeltoe.Management.Tracing;
+using Ordering.API.Services;
 
 namespace Ordering.API
 {
@@ -85,6 +86,32 @@ namespace Ordering.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ordering.API", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = "在下框中输入请求头中需要添加Jwt授权Token：Bearer Token",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+
+
             });
 
             services.AddHealthChecksUI()
@@ -98,8 +125,9 @@ namespace Ordering.API
                     }).AddRedis("127.0.0.1:6379")
                       .AddSqlServer(this.Configuration.GetConnectionString("OrderDb"));
 
-
-
+            services.AddTransient<ISecurityContextAccessor, SecurityContextAccessor>();
+            services.AddUserTokenService(this.Configuration);
+            services.AddJwtSecurity(this.Configuration);
             services.AddDistributedTracing(Configuration, builder => {
                 builder.UseZipkinWithTraceOptions(services);
             });
@@ -138,6 +166,8 @@ namespace Ordering.API
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
+                //AddAuthentication();
 
             app.UseHttpContextItemsMiddleware();
 

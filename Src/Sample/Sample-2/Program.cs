@@ -15,6 +15,15 @@ using TinyService.ReactiveRabbit.Brocker;
 
 namespace Sample_2
 {
+    public class Message
+    {
+        public Message(string body)
+        {
+            Body = body;
+        }
+
+        public string Body { get; }
+    }
     class Program
     {
         static void Main(string[] args)
@@ -36,9 +45,10 @@ namespace Sample_2
 
             var obserable = Observable.Timer(TimeSpan.Zero, TimeSpan.FromMilliseconds(300))
                                       .Select(p => p + "--" + Guid.NewGuid().ToString("N"));
-
+            brocker.SubscribeToTopic<Message>("Rebus-Topic")
+                   .Subscribe(p=>Console.WriteLine(p.Body));
             // obserable.Retry().Subscribe(inputendpoint);
-               SendDelayMessage(brocker, channelfactory);
+              // SendDelayMessage(brocker, channelfactory);
                Console.ReadKey();
          }
 

@@ -26,6 +26,19 @@ namespace OrderClient.Controllers
             this.swaggerClient = swaggerClient;
         }
 
+        [HttpGet("userlogin")]
+        public async Task<UserToken> UserLogin(string user,string role)
+        {
+            return  await this.swaggerClient.GettokenAsync(user, role);
+
+        }
+
+        [HttpGet("queryuser")]
+        public async Task<string> QueryInfo()
+        {
+            return this.User.Identity.Name;
+        }
+
         [HttpGet]
         public Task<ICollection<OrderDto>> Get()
         {
