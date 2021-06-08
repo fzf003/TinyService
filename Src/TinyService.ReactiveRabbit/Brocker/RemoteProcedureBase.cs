@@ -77,19 +77,19 @@ namespace TinyService.ReactiveRabbit.Brocker
                 
                 this._logger.LogError("Error:{0}", ex);
 
-                //Channel.BasicNack(args.DeliveryTag, false, requeue: false);
+                Channel.BasicNack(args.DeliveryTag, false, requeue: false);
             }
         }
 
-        private static RequestContext DeserializeMessage(ReadOnlyMemory<byte> body, IBasicProperties props)
+        private  RequestContext DeserializeMessage(ReadOnlyMemory<byte> body, IBasicProperties props)
         {
 
             var message = new PayloadMessage
             {
                 Body = body
             };
-
-            var userContext = new RequestContext(message, props.UserId, props.AppId, props.ContentType, props.Type, props.CorrelationId,props.ReplyTo);
+          
+            var userContext = new RequestContext(message, props.UserId, props.AppId, props.ContentType, props.Type, props.CorrelationId,props.ReplyTo,channel: this.Channel);
 
             return userContext;
         }

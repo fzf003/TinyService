@@ -9,6 +9,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TinyService.ReactiveRabbit.RabbitFactory;
 
 namespace TinyService.ReactiveRabbit.Brocker
 {
@@ -19,12 +20,15 @@ namespace TinyService.ReactiveRabbit.Brocker
         readonly ILoggerFactory _loggerFactory;
 
         readonly ILogger<MessageBroker> _logger;
-  
-        public MessageBroker(IModel channel,ILoggerFactory loggerFactory)
+
+        readonly IChannelFactory _channelFactory;
+
+        public MessageBroker(IChannelFactory channelFactory, ILoggerFactory loggerFactory)
         {
-            _channel = channel;
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<MessageBroker>();
+            _channelFactory = channelFactory;
+            _channel = _channelFactory.Create();
         }
 
         public IDisposable RegisterHandle(string exchangeName = "", string queueName = "", string routingKey = "", Func<RequestContext, IBasicProperties, Task> onMessage = null,IDictionary<string,object> arguments=null)
@@ -68,7 +72,10 @@ namespace TinyService.ReactiveRabbit.Brocker
 
         public void Dispose()
         {
-           
+           if(this._channel.IsOpen)
+            {
+                this._channel.Dispose();
+            }
         }
     }
 }

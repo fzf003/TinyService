@@ -1,5 +1,7 @@
 ﻿using RabbitMQ.Client;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TinyService.ReactiveRabbit
 {
@@ -39,6 +41,35 @@ namespace TinyService.ReactiveRabbit
                 };
 
             channel.BasicPublish(exchange: exchangename, routingKey: string.Empty, basicProperties: props, body: message);
+        }
+
+
+        public static Task SendMessage(this IModel channel, ReadOnlyMemory<byte> message, string exchangename = "", string routingKey = "", Action<IBasicProperties> propertiesaction = null)
+        {
+            var props = channel.CreateBasicProperties();
+            if (propertiesaction != null)
+                propertiesaction(props);
+            channel.BasicPublish(exchange: exchangename, routingKey: routingKey, basicProperties: props, body: message);
+
+            return Task.CompletedTask;
+        }
+
+
+
+
+        public static Task ReplyMessage(this IModel channel, ReadOnlyMemory<byte> replymessage, string replytoadress, string exchange = "", Action<IBasicProperties> propertiesaction = null)
+        {
+            var props = channel.CreateBasicProperties();
+            if (propertiesaction != null)
+                propertiesaction(props);
+
+            channel.BasicPublish(
+                exchange: exchange,
+                routingKey: replytoadress,
+                basicProperties: props,
+                body: replymessage);
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -7,9 +7,9 @@ namespace TinyService.ReactiveRabbit.Brocker
 {
     public class RequestContext
     {
- 
 
-        public RequestContext(PayloadMessage requestMessage, string username, string appId, string contentType, string type, string correlationId, string replyTo)
+
+        public RequestContext(PayloadMessage requestMessage, string username, string appId, string contentType, string type, string correlationId, string replyTo, IModel channel)
         {
             RequestMessage = requestMessage;
 
@@ -24,6 +24,8 @@ namespace TinyService.ReactiveRabbit.Brocker
             CorrelationId = correlationId;
 
             ReplyTo = replyTo;
+
+            Channel = channel;
         }
 
         public string ReplyTo { get; set; }
@@ -39,5 +41,7 @@ namespace TinyService.ReactiveRabbit.Brocker
         public string Type { get; set; }
 
         public string CorrelationId { get; set; }
+
+        public IModel Channel { get; }
     }
 }

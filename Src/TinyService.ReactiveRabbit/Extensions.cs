@@ -22,12 +22,7 @@ namespace TinyService.ReactiveRabbit
                 return new ChannelFactory(settings);
             });
 
-            services.AddSingleton<IMessageBroker>((provider) =>
-            {
-                var factory = provider.GetService<IChannelFactory>();
-                var loggerfactory = provider.GetService<ILoggerFactory>();
-                return new MessageBroker(factory.Create(), loggerfactory);
-            });
+            services.AddSingleton<IMessageBroker, MessageBroker>();
  
             return services;
         }
